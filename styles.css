@@ -1,0 +1,14 @@
+.container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+}
+
+.calculator{
+    background-color: gray;
+}
+
+h1{
+    text-align: center;
+}
