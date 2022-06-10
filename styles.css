@@ -7,8 +7,43 @@
 
 .calculator{
     background-color: gray;
+    padding:10px;
+    height:75%;
+    width: 30%;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.buttons{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 70%;
+
+}
+
+.buttonRow {
+    display: flex;
+    justify-content: space-between;
+    height: 25%;
+    width: 100%;
 }
 
 h1{
     text-align: center;
+}
+
+button{
+    width : 25%;
+    height: 100%;
+}
+
+#display{
+    height: 30%;
+    background-color: beige;
+    margin-bottom: 10px;
+    text-align: end;
+    font-size: 50px;
 }
