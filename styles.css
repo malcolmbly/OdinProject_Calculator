@@ -47,3 +47,7 @@ button{
     text-align: end;
     font-size: 50px;
 }
+
+.selected{
+    background-color: darkgray;
+}
