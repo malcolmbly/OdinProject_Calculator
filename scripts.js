@@ -25,8 +25,11 @@ function buttonPress(event) {
         clear();
     } else if (event.target.id == "delete") {
         undo();
-    } else if (event.target.id == "equals"){
-        evaluateCalculation();
+    } else if (event.target.id == "equals") {
+        if (storedOperator !== "") {
+            evaluateCalculation();
+        }
+        
     } else {
         return;
     }
@@ -47,7 +50,7 @@ function operatorPress(event) {
         storedNumber = parseFloat(display.innerText);
         display.innerText = "0";
     } else {
-
+        event.target.classList.add('selected');
         evaluateCalculation();
 
     }
@@ -55,11 +58,14 @@ function operatorPress(event) {
 }
 
 function evaluateCalculation() {
-
+    //need to add a check for when we press multiple operators
+    //in a row instead of pressing equals.
     const number2 = parseFloat(display.innerText);
     const number1 = storedNumber;
     const operator = storedOperator;
-    calculator.querySelector('.selected').classList.remove('selected');
+
+    calculator.querySelector('.selected').classList.toggle('selected');
+    
     storedOperator = "";
     // how can I remove redundancy of so many storedOperator clears;
     if (operator == "add") {
