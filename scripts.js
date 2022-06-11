@@ -58,24 +58,31 @@ function evaluateCalculation() {
 
     const number2 = parseFloat(display.innerText);
     const number1 = storedNumber;
+    const operator = storedOperator;
     calculator.querySelector('.selected').classList.remove('selected');
-
-    if (storedOperator == "add") {
+    storedOperator = "";
+    // how can I remove redundancy of so many storedOperator clears;
+    if (operator == "add") {
         display.innerText = `${number1 + number2}`;
         return;
-    } else if (storedOperator == "subtract") {
+
+    } else if (operator == "subtract") {
         display.innerText = `${number1 - number2}`;
         return;
-    } else if (storedOperator == "divide") {
+
+    } else if (operator == "divide") {
         display.innerText = `${number1 / number2}`;
         return;
-    } else if (storedOperator == "multiply") {
+
+    } else if (operator == "multiply") {
         display.innerText = `${number1 * number2}`;
         return;
-    } else if (storedOperator == "exponent") {
+
+    } else if (operator == "exponent") {
         display.innerText = `${number1 ** number2}`;
         return;
-    } else if (storedOperator == "root") {
+
+    } else if (operator == "root") {
         display.innerText = `${number1 ** (1 / number2)}`;
         return;
     }
