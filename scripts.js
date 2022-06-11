@@ -91,7 +91,8 @@ function clear() {
     storedOperator = "";
 
     //unselect selected operator buttons
-    calculator.querySelector('.selected').classList.remove('selected');
+    const selectedButton = calculator.querySelector('.selected');
+    if (selectedButton) { selectedButton.classList.remove('selected') };
 }
 
 // create method that takes an operator and two numbers
