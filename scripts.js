@@ -1,10 +1,10 @@
 const calculator = document.querySelector('.calculator');
 const display = calculator.querySelector('#display');
+display.innerText = "0";
 //add listeners to buttons for click
 const buttons = calculator.querySelectorAll('button');
-buttons.forEach(addEventListener('click', buttonPress));
+buttons.forEach(btn => btn.addEventListener('click', buttonPress));
 
-let displayedNumber = "";
 let storedNumber = 0;
 let storedOperator = "";
 
@@ -14,19 +14,18 @@ let storedOperator = "";
 // operator, then move on to the next number)
 function buttonPress(event) {
     
-    const buttonType = event.target.btnType;
-
+    const buttonType = event.target.getAttribute('btnType');
     if (buttonType == "number") {
         numberPress(event);
     } else if (buttonType == "operator") {
         operatorPress(event);
-    } else if (target.id == "decimal") {
+    } else if (event.target.id == "decimal") {
         decimalPress()
-    } else if (target.id == "AC") {
+    } else if (event.target.id == "AC") {
         clear();
-    } else if (target.id == "delete") {
+    } else if (event.target.id == "delete") {
         undo();
-    } else if (target.id == "equals"){
+    } else if (event.target.id == "equals"){
         evaluateCalculation();
     } else {
         return;
@@ -35,9 +34,8 @@ function buttonPress(event) {
 
 function numberPress(event) {
 
-    displayedNumber += event.target.id;
-    display.textContent = displayedNumber;
-
+    const floatNumber = parseFloat(display.innerText);
+    display.innerText = parseFloat(floatNumber + event.target.id);
 }
 
 function operatorPress(event) {
@@ -46,7 +44,8 @@ function operatorPress(event) {
     event.target.classList.toggle('selected');
     if (storedOperator === "") {
 
-        storedNumber = parseFloat(display.textContent);
+        storedNumber = parseFloat(display.innerText);
+        display.innerText = "0";
     } else {
 
         evaluateCalculation();
@@ -57,36 +56,37 @@ function operatorPress(event) {
 
 function evaluateCalculation() {
 
-    const number2 = parseFloat(display.textContent);
+    const number2 = parseFloat(display.innerText);
     const number1 = storedNumber;
+    calculator.querySelector('.selected').classList.remove('selected');
 
     if (storedOperator == "add") {
-        display.textContent = `${number1 + number2}`;
+        display.innerText = `${number1 + number2}`;
         return;
     } else if (storedOperator == "subtract") {
-        display.textContent = `${number1 - number2}`;
+        display.innerText = `${number1 - number2}`;
         return;
     } else if (storedOperator == "divide") {
-        display.textContent = `${number1 / number2}`;
+        display.innerText = `${number1 / number2}`;
         return;
     } else if (storedOperator == "multiply") {
-        display.textContent = `${number1 * number2}`;
+        display.innerText = `${number1 * number2}`;
         return;
     } else if (storedOperator == "exponent") {
-        display.textContent = `${number1 ** number2}`;
+        display.innerText = `${number1 ** number2}`;
         return;
     } else if (storedOperator == "root") {
-        display.textContent = `${number1 ** (1 / number2)}`;
+        display.innerText = `${number1 ** (1 / number2)}`;
         return;
     }
 }
 
 function undo() {
-    display.textContent = display.textContent.slice(0, -1);
+    display.innerText = display.innerText.slice(0, -1);
 }
 
 function clear() {
-    display.textContent = 0;
+    display.innerText = 0;
     storedNumber = 0;
     storedOperator = "";
 
