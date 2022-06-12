@@ -7,6 +7,8 @@ const operatorSymbolToWord = {
     '-' : "subtract",
     '/' : "divide",
     '*' : "multiply",
+    'n√x': "root",
+    "xn" : "exponent",
 };
 
 resultDisplay.innerText = "";
@@ -56,7 +58,6 @@ function keyPress(event) {
         } else {
             numberPress(event.key);
         }
-
     } else if (keyIsOperator(event.key) && event.key !== '*') {
         operatorPress(event.key);
     } else if (event.key === '.') {
@@ -92,23 +93,15 @@ function operatorPress(operator) {
             resultDisplay.innerText = newNumberDisplay.innerText;
             newNumberDisplay.innerText = "";
         }
-        if (!newNumberDisplay.innerText) {
-            
-        } else {
-            evaluateCalculation();
-        }
 
     } else {
-        if (!newNumberDisplay.innerText) {
-            
-        } else {
-            const oldOperator = calculator.querySelector(`#${storedOperator}`);
+        if (newNumberDisplay.innerText !== "") {
             evaluateCalculation();
         }
-
     }
 
     operatorDisplay.innerText = operator;
+    console.log(operator);
     //convert symbol to word equivalent
     storedOperator = operatorSymbolToWord[operator]; 
 }
@@ -137,7 +130,7 @@ function evaluateCalculation() {
 
     } else if (operator == "exponent") {
         resultDisplay.innerText = `${number1 ** number2}`;     
-
+        
     } else if (operator == "root") {
         resultDisplay.innerText = `${number1 ** (1 / number2)}`; 
     }
@@ -147,16 +140,16 @@ function evaluateCalculation() {
 }
 
 function undo() {
-    if (newNumberDisplay.innerText.length === 1) {
-        newNumberDisplay.innerText = "0";
+    if (newNumberDisplay.innerText.length === 0) {
+        newNumberDisplay.innerText = "";
     } else {
         newNumberDisplay.innerText = newNumberDisplay.innerText.slice(0, -1);
     }
 }
 
 function clear() {
-    resultDisplay.innerText = 0;
-    newNumberDisplay.innerText = 0;
+    resultDisplay.innerText = "";
+    newNumberDisplay.innerText = "";
     operatorDisplay.innerText = "";
     storedOperator = "";
 }
