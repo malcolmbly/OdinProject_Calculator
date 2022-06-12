@@ -23,13 +23,14 @@ function buttonPress(event) {
         operatorPress(event);
     } else if (event.target.id == "decimal") {
         decimalPress()
-    } else if (event.target.id == "AC") {
+    } else if (event.target.id == "ac") {
         clear();
     } else if (event.target.id == "delete") {
         undo();
     } else if (event.target.id == "equals") {
         if (storedOperator !== "") {
             evaluateCalculation();
+            storedOperator = "";
             calculator.querySelector('.selected').classList.remove('selected');
         }
     } else {
@@ -50,20 +51,21 @@ function operatorPress(event) {
     pressedBtn.classList.toggle('selected');
 
     if (storedOperator === "") {
-
-        resultDisplay.innerText = newNumberDisplay.innerText;
-        newNumberDisplay.innerText = "0";
-        operatorDisplay.innerText = pressedBtn.textContent;
+        if (newNumberDisplay.innerText !== "0") {
+            resultDisplay.innerText = 0;
+        }
+        storedOperator = "add";
+        evaluateCalculation();
 
     } else {
 
         const oldOperator = calculator.querySelector(`#${storedOperator}`);
         oldOperator.classList.remove('selected');
         evaluateCalculation();
-        operatorDisplay.innerText = pressedBtn.textContent;
     }
-    
-    storedOperator = calculator.querySelector('.selected').id;
+
+    operatorDisplay.innerText = pressedBtn.textContent;
+    storedOperator = pressedBtn.id;
     
 }
 
