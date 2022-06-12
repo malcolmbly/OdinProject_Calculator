@@ -100,10 +100,10 @@ function evaluateCalculation() {
 }
 
 function undo() {
-    if (display.innerText.length === 1) {
-        display.innerText = "0";
+    if (newNumberDisplay.innerText.length === 1) {
+        newNumberDisplay.innerText = "0";
     } else {
-        display.innerText = display.innerText.slice(0, -1);
+        newNumberDisplay.innerText = newNumberDisplay.innerText.slice(0, -1);
     }
 }
 
