@@ -1,11 +1,13 @@
 const calculator = document.querySelector('.calculator');
-const display = calculator.querySelector('#display');
-display.innerText = "0";
+const resultDisplay = calculator.querySelector('#topDisplay');
+const newNumberDisplay = calculator.querySelector('#secondNumberDisplay');
+const operatorDisplay = calculator.querySelector('#operatorDisplay');
+
+resultDisplay.innerText = "0";
 //add listeners to buttons for click
 const buttons = calculator.querySelectorAll('button');
 buttons.forEach(btn => btn.addEventListener('click', buttonPress));
 
-let storedNumber = 0;
 let storedOperator = "";
 
 //need to 1) check button for type
@@ -28,8 +30,8 @@ function buttonPress(event) {
     } else if (event.target.id == "equals") {
         if (storedOperator !== "") {
             evaluateCalculation();
+            calculator.querySelector('.selected').classList.remove('selected');
         }
-        
     } else {
         return;
     }
@@ -37,61 +39,64 @@ function buttonPress(event) {
 
 function numberPress(event) {
 
-    const floatNumber = parseFloat(display.innerText);
-    display.innerText = parseFloat(floatNumber + event.target.id);
+    const floatNumber = parseFloat(newNumberDisplay.innerText ? newNumberDisplay.innerText : 0);
+    newNumberDisplay.innerText = parseFloat(floatNumber + event.target.id);
 }
 
 function operatorPress(event) {
     // check whether we've entered any number, one number,
     // or if we've already entered two numbers and an operator
-    event.target.classList.toggle('selected');
+    pressedBtn = event.target;
+    pressedBtn.classList.toggle('selected');
+
     if (storedOperator === "") {
 
-        storedNumber = parseFloat(display.innerText);
-        display.innerText = "0";
-    } else {
-        event.target.classList.add('selected');
-        evaluateCalculation();
+        resultDisplay.innerText = newNumberDisplay.innerText;
+        newNumberDisplay.innerText = "0";
+        operatorDisplay.innerText = pressedBtn.textContent;
 
+    } else {
+
+        const oldOperator = calculator.querySelector(`#${storedOperator}`);
+        oldOperator.classList.remove('selected');
+        evaluateCalculation();
+        operatorDisplay.innerText = pressedBtn.textContent;
     }
-    storedOperator = event.target.id;
+    
+    storedOperator = calculator.querySelector('.selected').id;
+    
 }
 
 function evaluateCalculation() {
     //need to add a check for when we press multiple operators
     //in a row instead of pressing equals.
-    const number2 = parseFloat(display.innerText);
-    const number1 = storedNumber;
+    const number2 = parseFloat(newNumberDisplay.innerText);
+    const number1 = parseFloat(resultDisplay.innerText);
     const operator = storedOperator;
-
-    calculator.querySelector('.selected').classList.toggle('selected');
-    
     storedOperator = "";
+    console.log(`doing ${number1} ${operator} ${number2}`);
     // how can I remove redundancy of so many storedOperator clears;
     if (operator == "add") {
-        display.innerText = `${number1 + number2}`;
-        return;
+        resultDisplay.innerText = `${number1 + number2}`;
 
     } else if (operator == "subtract") {
-        display.innerText = `${number1 - number2}`;
-        return;
+        resultDisplay.innerText = `${number1 - number2}`;
 
     } else if (operator == "divide") {
-        display.innerText = `${number1 / number2}`;
-        return;
+        resultDisplay.innerText = `${number1 / number2}`;
 
     } else if (operator == "multiply") {
-        display.innerText = `${number1 * number2}`;
-        return;
+        resultDisplay.innerText = `${number1 * number2}`;
 
     } else if (operator == "exponent") {
-        display.innerText = `${number1 ** number2}`;
-        return;
+        resultDisplay.innerText = `${number1 ** number2}`;     
 
     } else if (operator == "root") {
-        display.innerText = `${number1 ** (1 / number2)}`;
-        return;
+        resultDisplay.innerText = `${number1 ** (1 / number2)}`; 
     }
+    
+    newNumberDisplay.innerText = 0;
+    operatorDisplay.innerText = "";
 }
 
 function undo() {
@@ -103,8 +108,9 @@ function undo() {
 }
 
 function clear() {
-    display.innerText = 0;
-    storedNumber = 0;
+    resultDisplay.innerText = 0;
+    newNumberDisplay.innerText = 0;
+    operatorDisplay.innerText = "";
     storedOperator = "";
 
     //unselect selected operator buttons
