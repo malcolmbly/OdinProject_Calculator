@@ -95,7 +95,11 @@ function evaluateCalculation() {
 }
 
 function undo() {
-    display.innerText = display.innerText.slice(0, -1);
+    if (display.innerText.length === 1) {
+        display.innerText = "0";
+    } else {
+        display.innerText = display.innerText.slice(0, -1);
+    }
 }
 
 function clear() {
