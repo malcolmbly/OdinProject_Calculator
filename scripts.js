@@ -2,12 +2,19 @@ const calculator = document.querySelector('.calculator');
 const resultDisplay = calculator.querySelector('#topDisplay');
 const newNumberDisplay = calculator.querySelector('#secondNumberDisplay');
 const operatorDisplay = calculator.querySelector('#operatorDisplay');
+const operatorSymbolToWord = {
+    '+' : "add",
+    '-' : "subtract",
+    '/' : "divide",
+    '*' : "multiply",
+};
 
-resultDisplay.innerText = "0";
+resultDisplay.innerText = "";
 //add listeners to buttons for click
 const buttons = calculator.querySelectorAll('button');
 buttons.forEach(btn => btn.addEventListener('click', buttonPress));
 
+window.addEventListener('keydown', keyPress);
 let storedOperator = "";
 
 //need to 1) check button for type
@@ -18,9 +25,9 @@ function buttonPress(event) {
     
     const buttonType = event.target.getAttribute('btnType');
     if (buttonType == "number") {
-        numberPress(event);
+        numberPress(event.target.id);
     } else if (buttonType == "operator") {
-        operatorPress(event);
+        operatorPress(event.target.innerText);
     } else if (event.target.id == "decimal") {
         decimalPress()
     } else if (event.target.id == "ac") {
@@ -31,42 +38,79 @@ function buttonPress(event) {
         if (storedOperator !== "") {
             evaluateCalculation();
             storedOperator = "";
-            calculator.querySelector('.selected').classList.remove('selected');
         }
     } else {
         return;
     }
 }
 
-function numberPress(event) {
+function keyPress(event) {
 
-    const floatNumber = parseFloat(newNumberDisplay.innerText ? newNumberDisplay.innerText : 0);
-    newNumberDisplay.innerText = parseFloat(floatNumber + event.target.id);
+    if (event.keyCode >= 48 && event.keyCode <= 57) {
+        if (event.keyCode === 56) {
+            if (event.key === '*') {
+                operatorPress('*');
+            } else {
+                numberPress(event.key);
+            }
+        } else {
+            numberPress(event.key);
+        }
+
+    } else if (keyIsOperator(event.key) && event.key !== '*') {
+        operatorPress(event.key);
+    } else if (event.key === '.') {
+        decimalPress()
+    } else if (event.key === 'Backspace') {
+        undo();
+    } else if (event.key === '=' || event.key === 'Enter') {
+        if (storedOperator !== "") {
+            evaluateCalculation();
+            storedOperator = "";
+        }
+    } else {
+        return;
+    }
 }
 
-function operatorPress(event) {
+function numberPress(number) {
+
+    const floatNumber = parseFloat(newNumberDisplay.innerText ? newNumberDisplay.innerText : 0);
+    if (newNumberDisplay.innerText.slice(-1) === '.') {
+        newNumberDisplay.innerText = parseFloat(floatNumber + '.' + number);
+    } else {
+        newNumberDisplay.innerText = parseFloat(floatNumber + number);
+    }
+}
+
+function operatorPress(operator) {
     // check whether we've entered any number, one number,
     // or if we've already entered two numbers and an operator
-    pressedBtn = event.target;
-    pressedBtn.classList.toggle('selected');
-
+    //operator is a symbol (+,-,/,*)
     if (storedOperator === "") {
-        if (newNumberDisplay.innerText !== "0") {
-            resultDisplay.innerText = 0;
+        if (newNumberDisplay.innerText !== "") {
+            resultDisplay.innerText = newNumberDisplay.innerText;
+            newNumberDisplay.innerText = "";
         }
-        storedOperator = "add";
-        evaluateCalculation();
+        if (!newNumberDisplay.innerText) {
+            
+        } else {
+            evaluateCalculation();
+        }
 
     } else {
+        if (!newNumberDisplay.innerText) {
+            
+        } else {
+            const oldOperator = calculator.querySelector(`#${storedOperator}`);
+            evaluateCalculation();
+        }
 
-        const oldOperator = calculator.querySelector(`#${storedOperator}`);
-        oldOperator.classList.remove('selected');
-        evaluateCalculation();
     }
 
-    operatorDisplay.innerText = pressedBtn.textContent;
-    storedOperator = pressedBtn.id;
-    
+    operatorDisplay.innerText = operator;
+    //convert symbol to word equivalent
+    storedOperator = operatorSymbolToWord[operator]; 
 }
 
 function evaluateCalculation() {
@@ -76,8 +120,9 @@ function evaluateCalculation() {
     const number1 = parseFloat(resultDisplay.innerText);
     const operator = storedOperator;
     storedOperator = "";
-    console.log(`doing ${number1} ${operator} ${number2}`);
-    // how can I remove redundancy of so many storedOperator clears;
+
+    console.log(`${number1} ${operator} ${number2}`);
+
     if (operator == "add") {
         resultDisplay.innerText = `${number1 + number2}`;
 
@@ -97,7 +142,7 @@ function evaluateCalculation() {
         resultDisplay.innerText = `${number1 ** (1 / number2)}`; 
     }
     
-    newNumberDisplay.innerText = 0;
+    newNumberDisplay.innerText = "";
     operatorDisplay.innerText = "";
 }
 
@@ -114,10 +159,21 @@ function clear() {
     newNumberDisplay.innerText = 0;
     operatorDisplay.innerText = "";
     storedOperator = "";
+}
 
-    //unselect selected operator buttons
-    const selectedButton = calculator.querySelector('.selected');
-    if (selectedButton) { selectedButton.classList.remove('selected') };
+function keyIsOperator(key){
+    //'/' is 191, 106 '*' is 106, '+' is 107
+    // '-' is 109
+    const operatorCodes = ['+', '-', '/', '*'];
+    return operatorCodes.includes(key);
+}
+
+function decimalPress() {
+    if (newNumberDisplay.innerText.includes('.')) {
+        return;
+    } else {
+        newNumberDisplay.textContent += '.';
+    }
 }
 
 // create method that takes an operator and two numbers
@@ -133,4 +189,3 @@ function clear() {
 // need to round values to fit display
 //
 // make sure decimal button can only be pressed once per number
-
