@@ -75,10 +75,11 @@ function keyPress(event) {
 }
 
 function numberPress(number) {
-
+    
     const floatNumber = parseFloat(newNumberDisplay.innerText ? newNumberDisplay.innerText : 0);
-    if (newNumberDisplay.innerText.slice(-1) === '.') {
-        newNumberDisplay.innerText = parseFloat(floatNumber + '.' + number);
+    console.log(floatNumber);
+    if (newNumberDisplay.innerText.includes('.')) {
+        newNumberDisplay.innerText += number;
     } else {
         newNumberDisplay.innerText = parseFloat(floatNumber + number);
     }
@@ -113,28 +114,34 @@ function evaluateCalculation() {
     const number1 = parseFloat(resultDisplay.innerText);
     const operator = storedOperator;
     storedOperator = "";
-
+    let answer;
     console.log(`${number1} ${operator} ${number2}`);
 
     if (operator == "add") {
-        resultDisplay.innerText = `${number1 + number2}`;
+        answer = number1 + number2;
 
     } else if (operator == "subtract") {
-        resultDisplay.innerText = `${number1 - number2}`;
+        answer = number1 - number2;
 
     } else if (operator == "divide") {
-        resultDisplay.innerText = `${number1 / number2}`;
-
+        if (number2 === 0) {
+            alert("Oh you think you're slick? no dividing by zero!");
+            answer = number1 / 1;
+        } else {
+            answer = number1 / number2; 
+        }
+        
     } else if (operator == "multiply") {
-        resultDisplay.innerText = `${number1 * number2}`;
+        answer = number1 * number2;
 
     } else if (operator == "exponent") {
-        resultDisplay.innerText = `${number1 ** number2}`;     
-        
+        answer = number1 ** number2;     
+
     } else if (operator == "root") {
-        resultDisplay.innerText = `${number1 ** (1 / number2)}`; 
+        answer = number1 ** (1 / number2); 
     }
-    
+
+    resultDisplay.innerText = calculatorFormat(answer);
     newNumberDisplay.innerText = "";
     operatorDisplay.innerText = "";
 }
@@ -169,6 +176,30 @@ function decimalPress() {
     }
 }
 
+function calculatorFormat(floatNumber) {
+    //a total of 9 digits can fit, so if it's great than 9,
+    // use the scientific notation
+    const unformattedNumber = String(floatNumber).includes('.') ? String(floatNumber) : String(floatNumber) + '.';
+    let formattedNumber = unformattedNumber;
+
+    
+    if (unformattedNumber.length > 9) {
+        const decimalPlace = unformattedNumber.indexOf('.') == -1 ? unformattedNumber.length - 1 : unformattedNumber.indexOf('.');
+        //figure out how many indices left the decimal needs to be 
+        //shifted.
+        const decimalShift = decimalPlace - 1;
+        //because we are reducing the length, we can fit some decimal
+        // places, more precisely 9 - 4 - (the number after the e)
+
+        const magnitudeShiftedNumber = unformattedNumber.slice(0, 1) + '.' +
+            unformattedNumber.slice(2, decimalPlace) + unformattedNumber.slice(decimalPlace + 1);
+        
+        formattedNumber = String(magnitudeShiftedNumber).slice(0, 9-(2 + String(decimalShift).length))
+            + `e${decimalShift}`;
+
+    }
+    return formattedNumber;
+}
 // create method that takes an operator and two numbers
 // and then it runs them together (and calls the respective
 // add, subtract, divide, etc. method)
