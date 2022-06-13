@@ -6,14 +6,14 @@
 }
 
 .calculator{
-    background-color: gray;
+    background-color: black;
     height:75%;
     width: 30%;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-color: gray;
+    border-color: black;
     border-style: solid;
     border-width: 10px;
 }
@@ -32,6 +32,10 @@
     justify-content: space-between;
     height: 25%;
     width: 100%;
+}
+
+.operation{
+    background-color: aquamarine;
 }
 
 h1{
