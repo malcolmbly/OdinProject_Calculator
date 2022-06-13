@@ -8,7 +8,7 @@ const operatorSymbolToWord = {
     '/' : "divide",
     '*' : "multiply",
     'n√x': "root",
-    "xn" : "exponent",
+    'xn' : "exponent",
 };
 
 resultDisplay.innerText = "";
@@ -22,7 +22,7 @@ let storedOperator = "";
 //need to 1) check button for type
 // 2) if it's a number, add it to the current number
 // 3) if it's an operator ( and we don't already have another active
-// operator, then move on to the next number)
+// operator, then move on to .the next number)
 function buttonPress(event) {
     
     const buttonType = event.target.getAttribute('btnType');
@@ -77,12 +77,13 @@ function keyPress(event) {
 function numberPress(number) {
     
     const floatNumber = parseFloat(newNumberDisplay.innerText ? newNumberDisplay.innerText : 0);
-    console.log(floatNumber);
-    if (newNumberDisplay.innerText.includes('.')) {
+
+    if (newNumberDisplay.innerText.includes('.') && !newNumberDisplay.innerText.includes('e')) {
         newNumberDisplay.innerText += number;
     } else {
         newNumberDisplay.innerText = parseFloat(floatNumber + number);
     }
+    newNumberDisplay.innerText = calculatorFormat(newNumberDisplay.innerText);
 }
 
 function operatorPress(operator) {
@@ -180,11 +181,11 @@ function calculatorFormat(floatNumber) {
     //a total of 9 digits can fit, so if it's great than 9,
     // use the scientific notation
     const unformattedNumber = String(floatNumber).includes('.') ? String(floatNumber) : String(floatNumber) + '.';
-    let formattedNumber = unformattedNumber;
+    let formattedNumber = String(floatNumber);
 
     
     if (unformattedNumber.length > 9) {
-        const decimalPlace = unformattedNumber.indexOf('.') == -1 ? unformattedNumber.length - 1 : unformattedNumber.indexOf('.');
+        const decimalPlace = unformattedNumber.indexOf('.');
         //figure out how many indices left the decimal needs to be 
         //shifted.
         const decimalShift = decimalPlace - 1;
